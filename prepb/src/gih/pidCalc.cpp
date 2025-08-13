@@ -5,21 +5,21 @@ double kPTurn = 0;
 double kDTurn = 0;
 double FFTurn = 0;
 
-void setkPTurn(int kPT)
+void setkPTurn(double kPT)
 {
     kPTurn = kPT;
 }
-void setkDTurn(int kDT)
+void setkDTurn(double kDT)
 {
     kDTurn = kDT;
 }
 
-void setFFTurn(int FFT)
+void setFFTurn(double FFT)
 {
     FFTurn = FFT;
 };
 
 double angularCalc(double error, double prevError)
 {
-    return (error * kPTurn + (prevError-error) * kDTurn + sgn(error) * FFTurn);
+    return (error * kPTurn + (error-prevError) * kDTurn + sgn(error) * FFTurn);
 }

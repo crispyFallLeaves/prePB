@@ -33,6 +33,19 @@ void on_center_button()
 	auton %= v.size();
 }
 
+void telemetry()
+{
+	pros::Task([=]
+			   {
+		while (1)
+		{
+			pros::lcd::set_text(1, "IMU Heading:" + std::to_string(imu.get_heading()));
+			pros::lcd::set_text(2, "AUTON:" + v.at(auton));
+			pros::delay(50); 
+		} });
+	pros::delay(100);
+	return;
+}
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -41,9 +54,9 @@ void on_center_button()
  */
 void initialize()
 {
-	setkPTurn(1);
-	setkDTurn(0);
-	setFFTurn(0);
+	setkPTurn(0.9);
+	setkDTurn(2);
+	setFFTurn(6);
 	pros::lcd::initialize();
 	pros::lcd::register_btn1_cb(on_center_button);
 	imu.reset();
@@ -53,6 +66,7 @@ void initialize()
 		pros::delay(20);
 	}
 	pros::delay(100);
+	// telemetry();
 }
 
 /**
@@ -87,6 +101,14 @@ void competition_initialize() {}
 void autonomous()
 {
 	turnToHeading(imu, leftMotors, rightMotors, 180, 5000, false);
+	pros::delay(1000);
+	turnToHeading(imu, leftMotors, rightMotors, 45, 5000, false);
+	pros::delay(1000);
+	turnToHeading(imu, leftMotors, rightMotors, 270, 5000, false);
+	pros::delay(1000);
+	turnToHeading(imu, leftMotors, rightMotors, 30, 5000, false);
+	pros::delay(1000);
+	turnToHeading(imu, leftMotors, rightMotors, 0, 5000, false);
 }
 
 /**
@@ -105,16 +127,20 @@ void autonomous()
 
 void opcontrol()
 {
-
-	pros::Task([=]
-			   {
-		while (1)
-		{
-			pros::lcd::set_text(1, "IMU Heading:" + std::to_string(imu.get_heading()));
-			pros::lcd::set_text(2, "AUTON:" + v.at(auton));
-			pros::delay(50);
-		} });
-
+	turnToHeading(imu, leftMotors, rightMotors, 270, 5000, false);
+	pros::delay(1000);
+	turnToHeading(imu, leftMotors, rightMotors, 180, 5000, false);
+	pros::delay(1000);
+	turnToHeading(imu, leftMotors, rightMotors, 45, 5000, false);
+	pros::delay(1000);
+	turnToHeading(imu, leftMotors, rightMotors, 270, 5000, false);
+	pros::delay(1000);
+	turnToHeading(imu, leftMotors, rightMotors, 30, 5000, false);
+	pros::delay(1000);
+	turnToHeading(imu, leftMotors, rightMotors, 0, 5000, false);
+	pros::delay(1000);
+	turnToHeading(imu, leftMotors, rightMotors, 0, 5000, false);
+	telemetry();
 	bool isArcade = true;
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 
