@@ -21,27 +21,30 @@ void turnToHeadingDir(pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorG
     }
 
     double angleDifference = angleDistance(imu.get_heading(), targetHeading);
-    if (dir == 1 && angleDifference > 0)
-    {
-        angleDifference -= 360;
-    }
-    if (dir == -1 && angleDifference < 0)
+    
+    // Apply direction preference - FIXED COMPARISON OPERATORS
+    if (dir == 1 && angleDifference < 0)  // Force clockwise
     {
         angleDifference += 360;
     }
+    if (dir == -1 && angleDifference > 0)  // Force counterclockwise  
+    {
+        angleDifference -= 360;
+    }
 
-    double desiredRotation = imu.get_rotation() + angleDifference;
-    double error = imu.get_rotation() - desiredRotation;
+    // Calculate target rotation (this stays constant throughout the turn)
+    double targetRotation = imu.get_rotation() + angleDifference;
 
     double timeStarted = pros::millis();
-
+    double error = imu.get_rotation() - targetRotation;  // Calculate initial error
     double prevError = error;
-
     int inErrorRange = 0;
+
     // exit conditions
     while (inErrorRange < 10 && (pros::millis() - timeStarted) < timeout)
     {
         double power = angularCalc(error, prevError);
+        
         if (abs(power) < minSpeed)
         {
             power = minSpeed * sgn(power);
@@ -60,7 +63,8 @@ void turnToHeadingDir(pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorG
         pros::lcd::set_text(1, errorText.c_str());
         pros::delay(10);
 
-        double error = imu.get_rotation() - desiredRotation;
+        // FIXED: Removed duplicate declaration
+        error = imu.get_rotation() - targetRotation;
 
         if (abs(error) < 2)
         {
@@ -72,6 +76,7 @@ void turnToHeadingDir(pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorG
         }
         pros::delay(10);
     }
+    
     leftMotors.move(0);
     rightMotors.move(0);
     return;

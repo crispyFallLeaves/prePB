@@ -8,6 +8,7 @@
 #include "fih/turnToHeading.h"
 #include "fih/pidCalc.h"
 #include "fih/dt.h"
+#include "fih/conversions.h"
 #include <string>
 #include <vector>
 
@@ -18,7 +19,7 @@ pros::MotorGroup rightMotors({1, -2, 17}, pros::v5::MotorGears::blue);
 pros::IMU imu(20);
 pros::Rotation horz(-19);
 
-drive dt(leftMotors, rightMotors, imu, horz);
+drive dt(leftMotors, rightMotors, imu, horz, 0.8, cartridgeToRatio("blue"), 3.25);
 
 /**
  * A callback function for LLEMU's center button.
@@ -54,10 +55,9 @@ void telemetry()
 
 void odometry_task(void *param)
 {
-    drive *dt_ptr = static_cast<drive *>(param);
-    dt_ptr->odom();
+	drive *dt_ptr = static_cast<drive *>(param);
+	dt_ptr->odom();
 }
-
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -136,9 +136,13 @@ void opcontrol()
 	pros::delay(200);
 	turnToHeading(imu, leftMotors, rightMotors, 0, 5000);
 	pros::delay(200);
-	turnToHeading(imu, leftMotors, rightMotors, 270, 10000, {.turnDir = 1, .maxSpeed = 30});
+	turnToHeading(imu, leftMotors, rightMotors, 270, 10000, {.turnDir = -1, .maxSpeed = 50});
+
+	turnToHeading(imu, leftMotors, rightMotors, 0, 10000);
 
 	telemetry();
+
+	pros::delay(100000);
 	bool isArcade = true;
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 

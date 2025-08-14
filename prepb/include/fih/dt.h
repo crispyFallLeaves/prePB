@@ -13,10 +13,13 @@ public:
     double x = 0;
     double y = 0;
     double theta = 0;
+    double wheelDia = 0;
+    double cartridge = 0;
+    double gearRatio = 0;
     void setPose(double x, double y, double theta);
     void odom();
     std::vector<std::string> getPosition();
     void calibrate();
     void turnToAngle(double angle, double timeout, turnToHeadingParams params = {});
-    drive(pros::MotorGroup &l, pros::MotorGroup &r, pros::IMU &i, pros::Rotation &s);
+    drive(pros::MotorGroup &l, pros::MotorGroup &r, pros::IMU &i, pros::Rotation &s, double gearRatio, double cart, double wheel);
 };

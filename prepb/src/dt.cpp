@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-drive::drive(pros::MotorGroup &l, pros::MotorGroup &r, pros::IMU &i, pros::Rotation &s)
+drive::drive(pros::MotorGroup &l, pros::MotorGroup &r, pros::IMU &i, pros::Rotation &s, double gearRatio, double cart, double wheel)
     : leftMotors(l), rightMotors(r), inertial(i), horiz(s) {}
 
 void drive::setPose(double xstart, double ystart, double thetastart)
