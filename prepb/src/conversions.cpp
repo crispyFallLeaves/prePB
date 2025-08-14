@@ -26,5 +26,5 @@ double cartridgeToRatio(std::string cart)
 
 double degToInch(double degrees, double cart, double gearRatio, double wheel)
 {
-    return degrees * cart * gearRatio * wheel * PI;
+    return degrees/360 * cart * gearRatio * wheel * PI;
 }

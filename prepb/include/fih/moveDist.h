@@ -8,4 +8,4 @@
 #include "pros/motor_group.hpp"
 #include "pros/imu.hpp"
 
-void moveDist(double cart, double gearRatio, double wheelDia, pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorGroup &rightMotors, double distance, moveDistParams params = {});
+void moveDistance(double cart, double gearRatio, double wheelDia, pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorGroup &rightMotors, double distance, double timeout, moveDistParams params);

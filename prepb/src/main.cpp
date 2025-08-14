@@ -138,7 +138,7 @@ void opcontrol()
 	pros::delay(200);
 	turnToHeading(imu, leftMotors, rightMotors, 270, 10000, {.turnDir = -1, .maxSpeed = 50});
 
-	turnToHeading(imu, leftMotors, rightMotors, 0, 10000);
+	// turnToHeading(imu, leftMotors, rightMotors, 0, 10000);
 
 	telemetry();
 

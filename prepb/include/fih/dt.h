@@ -21,5 +21,6 @@ public:
     std::vector<std::string> getPosition();
     void calibrate();
     void turnToAngle(double angle, double timeout, turnToHeadingParams params = {});
+    void moveDist(double dist, double timeout, moveDistParams params = {});
     drive(pros::MotorGroup &l, pros::MotorGroup &r, pros::IMU &i, pros::Rotation &s, double gearRatio, double cart, double wheel);
 };

@@ -2,6 +2,7 @@
 #include "fih/turnToHeading.h"
 #include "pros/imu.h"
 #include "pros/rotation.h"
+#include "fih/moveDist.h"
 #include <vector>
 #include <string>
 
@@ -37,4 +38,8 @@ std::vector<std::string> drive::getPosition()
 void drive::turnToAngle(double angle, double timeout, turnToHeadingParams params)
 {
     turnToHeading(inertial, leftMotors, rightMotors, angle, timeout, params);
+}
+
+void drive::moveDist(double dist, double timeout, moveDistParams params){
+    moveDistance(this->cartridge, this->gearRatio, this->wheelDia, this->inertial,this->leftMotors,this->rightMotors, dist, timeout, params);
 }
