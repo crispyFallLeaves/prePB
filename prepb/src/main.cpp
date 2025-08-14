@@ -7,6 +7,7 @@
 #include "fih/arcade.h"
 #include "fih/turnToHeading.h"
 #include "fih/pidCalc.h"
+#include "fih/dt.h"
 #include <string>
 #include <vector>
 
@@ -16,6 +17,8 @@ pros::MotorGroup rightMotors({1, -2, 17}, pros::v5::MotorGears::blue);
 
 pros::IMU imu(20);
 pros::Rotation horz(-19);
+
+drive dt(leftMotors, rightMotors, imu, horz);
 
 /**
  * A callback function for LLEMU's center button.
@@ -39,13 +42,23 @@ void telemetry()
 			   {
 		while (1)
 		{
-			pros::lcd::set_text(1, "IMU Heading:" + std::to_string(imu.get_heading()));
-			pros::lcd::set_text(2, "AUTON:" + v.at(auton));
+			pros::lcd::set_text(1, "AUTON:" + v.at(auton));
+			pros::lcd::set_text(2, "Current X: " + dt.getPosition().at(0));
+			pros::lcd::set_text(3, "Current Y: " + dt.getPosition().at(1));
+			pros::lcd::set_text(4, "Current Theta: " + dt.getPosition().at(2));
 			pros::delay(50); 
 		} });
 	pros::delay(100);
 	return;
 }
+
+void odometry_task(void *param)
+{
+    drive *dt_ptr = static_cast<drive *>(param);
+    dt_ptr->odom();
+}
+
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -67,6 +80,7 @@ void initialize()
 	}
 	pros::delay(100);
 	// telemetry();
+	pros::Task odometry(odometry_task, &dt, "Odometry");
 }
 
 /**
@@ -100,15 +114,6 @@ void competition_initialize() {}
  */
 void autonomous()
 {
-	turnToHeading(imu, leftMotors, rightMotors, 180, 5000, false);
-	pros::delay(1000);
-	turnToHeading(imu, leftMotors, rightMotors, 45, 5000, false);
-	pros::delay(1000);
-	turnToHeading(imu, leftMotors, rightMotors, 270, 5000, false);
-	pros::delay(1000);
-	turnToHeading(imu, leftMotors, rightMotors, 30, 5000, false);
-	pros::delay(1000);
-	turnToHeading(imu, leftMotors, rightMotors, 0, 5000, false);
 }
 
 /**
@@ -127,19 +132,12 @@ void autonomous()
 
 void opcontrol()
 {
-	turnToHeading(imu, leftMotors, rightMotors, 270, 5000, false);
-	pros::delay(1000);
-	turnToHeading(imu, leftMotors, rightMotors, 180, 5000, false);
-	pros::delay(1000);
-	turnToHeading(imu, leftMotors, rightMotors, 45, 5000, false);
-	pros::delay(1000);
-	turnToHeading(imu, leftMotors, rightMotors, 270, 5000, false);
-	pros::delay(1000);
-	turnToHeading(imu, leftMotors, rightMotors, 30, 5000, false);
-	pros::delay(1000);
-	turnToHeading(imu, leftMotors, rightMotors, 0, 5000, false);
-	pros::delay(1000);
-	turnToHeading(imu, leftMotors, rightMotors, 0, 5000, false);
+	turnToHeading(imu, leftMotors, rightMotors, 270, 5000);
+	pros::delay(200);
+	turnToHeading(imu, leftMotors, rightMotors, 0, 5000);
+	pros::delay(200);
+	turnToHeading(imu, leftMotors, rightMotors, 270, 10000, {.turnDir = 1, .maxSpeed = 30});
+
 	telemetry();
 	bool isArcade = true;
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
