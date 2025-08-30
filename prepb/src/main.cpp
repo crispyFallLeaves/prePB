@@ -9,6 +9,8 @@
 #include "fih/pidCalc.h"
 #include "fih/dt.h"
 #include "fih/conversions.h"
+#include "fih/tickToInch.h"
+#include "fih/moveDist.h"
 #include <string>
 #include <vector>
 
@@ -19,7 +21,7 @@ pros::MotorGroup rightMotors({1, -2, 17}, pros::v5::MotorGears::blue);
 pros::IMU imu(20);
 pros::Rotation horz(-19);
 
-drive dt(leftMotors, rightMotors, imu, horz, 0.8, cartridgeToRatio("blue"), 3.25);
+drive dt(leftMotors, rightMotors, imu, horz, 0.75, "blue", 3.25);
 
 /**
  * A callback function for LLEMU's center button.
@@ -47,6 +49,11 @@ void telemetry()
 			pros::lcd::set_text(2, "Current X: " + dt.getPosition().at(0));
 			pros::lcd::set_text(3, "Current Y: " + dt.getPosition().at(1));
 			pros::lcd::set_text(4, "Current Theta: " + dt.getPosition().at(2));
+			pros::lcd::set_text(5, "left pos: " + std::to_string(tickToInch(leftMotors.get_position(), dt.cartridge,dt.gearRatio,dt.wheelDia)));
+			pros::lcd::set_text(6, "right pos: " + std::to_string(tickToInch(rightMotors.get_position(), dt.cartridge,dt.gearRatio,dt.wheelDia)));
+			// pros::lcd::set_text(1, (dt.cartridge));
+			// pros::lcd::set_text(2, std::to_string(dt.gearRatio));
+			// pros::lcd::set_text(3, std::to_string(dt.wheelDia));
 			pros::delay(50); 
 		} });
 	pros::delay(100);
@@ -67,9 +74,10 @@ void odometry_task(void *param)
  */
 void initialize()
 {
-	setkPTurn(0.9);
+	setkPTurn(0.95);
 	setkDTurn(2);
 	setFFTurn(6);
+	setkPLinear(5.5);
 	pros::lcd::initialize();
 	pros::lcd::register_btn1_cb(on_center_button);
 	imu.reset();
@@ -130,19 +138,57 @@ void autonomous()
  * task, not resume it from where it left off.
  */
 
-void opcontrol()
+void linearpidTesting()
+{
+	dt.moveDist(10, 3000);
+	dt.moveDist(-10, 3000);
+	dt.moveDist(50, 5000);
+	dt.moveDist(-50, 5000);
+}
+void turnpidTesting()
 {
 	turnToHeading(imu, leftMotors, rightMotors, 270, 5000);
 	pros::delay(200);
 	turnToHeading(imu, leftMotors, rightMotors, 0, 5000);
 	pros::delay(200);
 	turnToHeading(imu, leftMotors, rightMotors, 270, 10000, {.turnDir = -1, .maxSpeed = 50});
+}
+
+void movementTesting()
+{
+	dt.moveDist(24, 1000);
+	pros::delay(100);
+	dt.turnToAngle(90,1000);
+	pros::delay(100);
+	dt.moveDist(24, 1000);
+	pros::delay(100);
+	dt.turnToAngle(0, 1000);
+	pros::delay(100);
+	dt.moveDist(48, 1400);
+	pros::delay(100);
+	dt.turnToAngle(90, 1000);
+	pros::delay(100);
+	dt.moveDist(-24, 1000);
+	pros::delay(100);
+	dt.turnToAngle(0, 1000);
+	pros::delay(100);
+	dt.moveDist(-72, 2000);
+}
+
+void opcontrol()
+{
 
 	// turnToHeading(imu, leftMotors, rightMotors, 0, 10000);
 
-	telemetry();
+	// linearpidTesting();
 
-	pros::delay(100000);
+	
+
+	movementTesting();
+	pros::delay(1000);
+	telemetry();
+	
+	// pros::delay(100000);
 	bool isArcade = true;
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 

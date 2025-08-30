@@ -22,5 +22,5 @@ struct moveDistParams
     bool correctDir = true;
     int minSpeed = 0;
     int maxSpeed = 127;
-    int async = true;
+    int async = false;
 };

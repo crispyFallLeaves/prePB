@@ -14,7 +14,7 @@ public:
     double y = 0;
     double theta = 0;
     double wheelDia = 0;
-    double cartridge = 0;
+    std::string cartridge = "";
     double gearRatio = 0;
     void setPose(double x, double y, double theta);
     void odom();
@@ -22,5 +22,5 @@ public:
     void calibrate();
     void turnToAngle(double angle, double timeout, turnToHeadingParams params = {});
     void moveDist(double dist, double timeout, moveDistParams params = {});
-    drive(pros::MotorGroup &l, pros::MotorGroup &r, pros::IMU &i, pros::Rotation &s, double gearRatio, double cart, double wheel);
+    drive(pros::MotorGroup &l, pros::MotorGroup &r, pros::IMU &i, pros::Rotation &s, double gearRatio, std::string cart, double wheel);
 };

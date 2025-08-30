@@ -21,13 +21,13 @@ void turnToHeadingDir(pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorG
     }
 
     double angleDifference = angleDistance(imu.get_heading(), targetHeading);
-    
+
     // Apply direction preference - FIXED COMPARISON OPERATORS
-    if (dir == 1 && angleDifference < 0)  // Force clockwise
+    if (dir == 1 && angleDifference < 0) // Force clockwise
     {
         angleDifference += 360;
     }
-    if (dir == -1 && angleDifference > 0)  // Force counterclockwise  
+    if (dir == -1 && angleDifference > 0) // Force counterclockwise
     {
         angleDifference -= 360;
     }
@@ -36,7 +36,7 @@ void turnToHeadingDir(pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorG
     double targetRotation = imu.get_rotation() + angleDifference;
 
     double timeStarted = pros::millis();
-    double error = imu.get_rotation() - targetRotation;  // Calculate initial error
+    double error = imu.get_rotation() - targetRotation; // Calculate initial error
     double prevError = error;
     int inErrorRange = 0;
 
@@ -44,7 +44,7 @@ void turnToHeadingDir(pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorG
     while (inErrorRange < 10 && (pros::millis() - timeStarted) < timeout)
     {
         double power = angularCalc(error, prevError);
-        
+
         if (abs(power) < minSpeed)
         {
             power = minSpeed * sgn(power);
@@ -59,11 +59,14 @@ void turnToHeadingDir(pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorG
         rightMotors.move(power);
 
         prevError = error;
-        std::string errorText = "Error: " + std::to_string(error);
-        pros::lcd::set_text(1, errorText.c_str());
+
+        bool print = 0;
+        if (print)
+        {
+            pros::lcd::set_text(1, "Error: " + std::to_string(error));
+        }
         pros::delay(10);
 
-        // FIXED: Removed duplicate declaration
         error = imu.get_rotation() - targetRotation;
 
         if (abs(error) < 2)
@@ -76,7 +79,7 @@ void turnToHeadingDir(pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorG
         }
         pros::delay(10);
     }
-    
+
     leftMotors.move(0);
     rightMotors.move(0);
     return;

@@ -6,7 +6,7 @@ double kPTurn = 0;
 double kDTurn = 0;
 double FFTurn = 0;
 
-// Linear PID constants  
+// Linear PID constants
 double kPLinear = 0;
 double kDLinear = 0;
 double FFLinear = 0;
@@ -33,12 +33,13 @@ double angularCalc(double error, double prevError)
 }
 
 
-void setkPLinear(double kPL) 
+// linear pid functions
+void setkPLinear(double kPL)
 {
-    kPLinear = kPL; 
+    kPLinear = kPL;
 }
 
-void setkDLinear(double kDL) 
+void setkDLinear(double kDL)
 {
     kDLinear = kDL;
 }

@@ -1,0 +1,1 @@
+double centidegreeToInch(double centidegree, double wheelDia);
