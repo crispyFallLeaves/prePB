@@ -74,9 +74,9 @@ void odometry_task(void *param)
  */
 void initialize()
 {
-	setkPTurn(0.95);
+	setkPTurn(1.1);
 	setkDTurn(2);
-	setFFTurn(6);
+	setFFTurn(7);
 	setkPLinear(5.5);
 	pros::lcd::initialize();
 	pros::lcd::register_btn1_cb(on_center_button);
@@ -158,7 +158,7 @@ void movementTesting()
 {
 	dt.moveDist(24, 1000);
 	pros::delay(100);
-	dt.turnToAngle(90,1000);
+	dt.turnToAngle(90, 1000);
 	pros::delay(100);
 	dt.moveDist(24, 1000);
 	pros::delay(100);
@@ -182,12 +182,16 @@ void opcontrol()
 
 	// linearpidTesting();
 
-	
+	// movementTesting();
 
-	movementTesting();
-	pros::delay(1000);
+	dt.moveToPoint(10, 10, 3000, 0, 1);
+	dt.moveToPoint(10, 40, 3000, 0, 1);
+	dt.moveToPoint(0, 0, 3000, 0, 1);
+	dt.moveToPoint(25, 50, 3000, 0, 1);
+	dt.moveToPoint(0, 60, 3000, -1, 1);
+	dt.moveToPoint(0, 0, 3000, 0, 1);
+
 	telemetry();
-	
 	// pros::delay(100000);
 	bool isArcade = true;
 	pros::Controller master(pros::E_CONTROLLER_MASTER);

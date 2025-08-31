@@ -23,4 +23,5 @@ public:
     void turnToAngle(double angle, double timeout, turnToHeadingParams params = {});
     void moveDist(double dist, double timeout, moveDistParams params = {});
     drive(pros::MotorGroup &l, pros::MotorGroup &r, pros::IMU &i, pros::Rotation &s, double gearRatio, std::string cart, double wheel);
+    void moveToPoint(double targetX, double targetY, double timeout, int front, double curve);
 };

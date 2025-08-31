@@ -126,9 +126,11 @@ void turnToHeading(pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorGrou
         leftMotors.move(-power);
         rightMotors.move(power);
 
-        prevError = error;
-        std::string errorText = "Error: " + std::to_string(error);
-        pros::lcd::set_text(1, errorText.c_str());
+        bool print = 0;
+        if (print)
+        {
+            pros::lcd::set_text(1, "Error: " + std::to_string(error));
+        }
         pros::delay(10);
 
         error = angleDistance(imu.get_heading(), targetHeading);
