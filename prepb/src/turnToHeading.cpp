@@ -126,10 +126,13 @@ void turnToHeading(pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorGrou
         leftMotors.move(-power);
         rightMotors.move(power);
 
-        bool print = 0;
+        bool print = 1;
         if (print)
         {
             pros::lcd::set_text(1, "Error: " + std::to_string(error));
+            pros::lcd::set_text(2, "Imu Heading: " + std::to_string(imu.get_heading()));
+            pros::lcd::set_text(3, "TargetAngle: " + std::to_string(targetHeading));
+            
         }
         pros::delay(10);
 
@@ -143,7 +146,6 @@ void turnToHeading(pros::IMU &imu, pros::MotorGroup &leftMotors, pros::MotorGrou
         {
             inErrorRange = 0;
         }
-        pros::delay(10);
     }
     leftMotors.move(0);
     rightMotors.move(0);

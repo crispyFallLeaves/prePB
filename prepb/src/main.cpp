@@ -74,10 +74,10 @@ void odometry_task(void *param)
  */
 void initialize()
 {
-	setkPTurn(1.1);
+	setkPTurn(1);
 	setkDTurn(2);
-	setFFTurn(7);
-	setkPLinear(5.5);
+	setFFTurn(8);
+	setkPLinear(5);
 	pros::lcd::initialize();
 	pros::lcd::register_btn1_cb(on_center_button);
 	imu.reset();
@@ -184,12 +184,13 @@ void opcontrol()
 
 	// movementTesting();
 
-	dt.moveToPoint(10, 10, 3000, 0, 1);
-	dt.moveToPoint(10, 40, 3000, 0, 1);
-	dt.moveToPoint(0, 0, 3000, 0, 1);
-	dt.moveToPoint(25, 50, 3000, 0, 1);
-	dt.moveToPoint(0, 60, 3000, -1, 1);
-	dt.moveToPoint(0, 0, 3000, 0, 1);
+	dt.moveToPoint(10, 10, 3000, 0, 0.8);
+	dt.moveToPoint(10, 40, 3000, 0, 0.8);
+	dt.moveToPoint(0, 0, 3000, 0, 0.8);
+	dt.moveToPoint(25, 50, 3000, 0, 0.8);
+	dt.moveToPoint(0, 60, 3000, -1, 0.8);
+	dt.moveToPoint(0, 0, 3000, 0, 0.8);
+	dt.turnToAngle(-90, 2000);
 
 	telemetry();
 	// pros::delay(100000);

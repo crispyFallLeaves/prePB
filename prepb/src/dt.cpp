@@ -33,13 +33,13 @@ void drive::odom()
     double prevL = leftMotors.get_position();
     double prevTheta = inertial.get_heading();
     double prevHorz = centidegreeToInch(horiz.get_position(), wheelDia);
-    pros::delay(10);
+    pros::delay(5);
     while (1)
     {
         currentR = rightMotors.get_position();
         currentL = leftMotors.get_position();
         currentTheta = inertial.get_heading();
-        currentHorz = centidegreeToInch(horiz.get_position(), wheelDia);
+        currentHorz = centidegreeToInch(horiz.get_position(), 3);
 
         double deltaR = currentR - prevR;
         double deltaL = currentL - prevL;
@@ -49,7 +49,7 @@ void drive::odom()
 
         double deltaShift = deltaHorz - (horzOffset * deltaTheta * (M_PI) / 180);
 
-        int accuracy = 10;
+        int accuracy = 20;
         for (int i = 1; i <= accuracy; i++)
         {
             double distSplit = deltaDist / accuracy;
@@ -69,7 +69,7 @@ void drive::odom()
         prevTheta = currentTheta;
         prevHorz = currentHorz;
 
-        pros::delay(10);
+        pros::delay(5);
     }
 }
 
@@ -130,8 +130,8 @@ void drive::moveToPoint(double targetX, double targetY, double timeout, int fron
             disableTurning = true;
         }
 
-        double curve = 1;
-        if (curve == 1)
+        double curveType = 2;
+        if (curveType == 1)
         {
             if ((fabs(angularError) * M_PI / 180) / curve > M_PI / 2)
             {
@@ -142,7 +142,7 @@ void drive::moveToPoint(double targetX, double targetY, double timeout, int fron
                 linearPower *= cos(((fabs(angularError) * M_PI / 180) / curve));
             }
         }
-        else if (curve == 2)
+        else if (curveType == 2)
         {
             if ((fabs(angularError) * M_PI / 180) / curve > M_PI)
             {
@@ -150,7 +150,7 @@ void drive::moveToPoint(double targetX, double targetY, double timeout, int fron
             }
             else
             {
-                linearPower *= cos((fabs(angularError)*M_PI/180)/curve-=[[[p;;oo8]]])
+                linearPower *= (cos((fabs(angularError) * M_PI / 180) / curve) + 1) / 2;
             }
         }
 
