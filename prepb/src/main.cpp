@@ -11,18 +11,23 @@
 #include "fih/conversions.h"
 #include "fih/tickToInch.h"
 #include "fih/moveDist.h"
+#include "fih/intake.h"
 #include <string>
 #include <vector>
 
 // PORTS ///////////////////////////////
-pros::MotorGroup leftMotors({-6, 4, -18}, pros::v5::MotorGears::blue);
-pros::MotorGroup rightMotors({1, -2, 17}, pros::v5::MotorGears::blue);
+pros::MotorGroup leftMotors({-8, -9, 10}, pros::v5::MotorGears::blue);
+pros::MotorGroup rightMotors({-1, 2, 3}, pros::v5::MotorGears::blue);
+
+pros::MotorGroup bottomRoller{-19};
+pros::MotorGroup intakeMotors{-11, -20};
+pros::Optical topColor(18);
 
 pros::IMU imu(20);
 pros::Rotation horz(-19);
 
 drive dt(leftMotors, rightMotors, imu, horz, 0.75, "blue", 3.25);
-
+intake intke(intakeMotors, bottomRoller, topColor);
 /**
  * A callback function for LLEMU's center button.
  *
@@ -74,6 +79,8 @@ void odometry_task(void *param)
  */
 void initialize()
 {
+	intke.setSortColor(0);
+	intke.setSortEnabled(1);
 	setkPTurn(1);
 	setkDTurn(2);
 	setFFTurn(8);
@@ -184,22 +191,21 @@ void opcontrol()
 
 	// movementTesting();
 
-	dt.moveToPoint(10, 10, 3000, 0, 0.8);
-	dt.moveToPoint(10, 40, 3000, 0, 0.8);
-	dt.moveToPoint(0, 0, 3000, 0, 0.8);
-	dt.moveToPoint(25, 50, 3000, 0, 0.8);
-	dt.moveToPoint(0, 60, 3000, -1, 0.8);
-	dt.moveToPoint(0, 0, 3000, 0, 0.8);
-	dt.turnToAngle(-90, 2000);
+	// dt.moveToPoint(10, 10, 3000, 0, 0.8);
+	// dt.moveToPoint(10, 40, 3000, 0, 0.8);
+	// dt.moveToPoint(0, 0, 3000, 0, 0.8);
+	// dt.moveToPoint(25, 50, 3000, 0, 0.8);
+	// dt.moveToPoint(0, 60, 3000, -1, 0.8);
+	// dt.moveToPoint(0, 0, 3000, 0, 0.8);
+	// dt.turnToAngle(-90, 2000);
 
-	telemetry();
+	// telemetry();
 	// pros::delay(100000);
 	bool isArcade = true;
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 	while (true)
 	{
-
 		if (isArcade)
 		{
 			arcade(master, leftMotors, rightMotors, 1);
@@ -207,6 +213,30 @@ void opcontrol()
 		else
 		{
 			tank(master, leftMotors, rightMotors, 1);
+		}
+
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1))
+		{
+			intke.longGoal();
+		}
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2))
+		{
+			intke.midGoal();
+		}
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1))
+		{
+			intke.loading();
+		}
+		else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2))
+		{
+			intke.unloading();
+		} else {
+			intke.stop();
+		}
+
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B))
+		{
+			intke.setSortEnabled(0);
 		}
 
 		pros::delay(20); // Run for 20 ms then update
